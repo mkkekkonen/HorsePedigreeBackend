@@ -24,6 +24,8 @@ namespace horsesBackend
 {
     public class Startup
     {
+        readonly string CorsOrigins = "_horseCors";
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -34,6 +36,11 @@ namespace horsesBackend
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors(options => options.AddPolicy(
+                name: CorsOrigins,
+                builder => builder.WithOrigins("http://localhost:4200")
+            ));
+
             services.AddAutoMapper(typeof(HorseProfile));
 
             services.AddControllers();
@@ -57,6 +64,8 @@ namespace horsesBackend
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseCors(CorsOrigins);
 
             app.UseAuthorization();
 
